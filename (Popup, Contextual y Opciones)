@@ -1,0 +1,205 @@
+MainActivity.kt------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.PopupMenu
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var textView: TextView
+    private lateinit var textViewContextual: TextView
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Configurar la Toolbar
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        textView = findViewById(R.id.text_view)
+        textViewContextual = findViewById(R.id.text_view_contextual)
+        val buttonPopup = findViewById<Button>(R.id.button_popup)
+
+       // Configurar el botón para mostrar el menú popup
+        buttonPopup.setOnClickListener { showPopupMenu(it) }
+
+        // Registrar el TextView para el menú contextual
+        registerForContextMenu(textViewContextual)
+    }
+
+
+
+
+
+
+// Inflar el menú de opciones
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    // Manejar la selección de elementos del menú de opciones
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                Toast.makeText(this, "Configuración seleccionada", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_about -> {
+                Toast.makeText(this, "Acerca de seleccionada", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    // Mostrar el menú contextual
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_contextual, menu)
+    }
+
+    // Manejar la selección de elementos del menú contextual
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.context_page -> {
+                Toast.makeText(this, "Pegado seleccionado", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.context_copy -> {
+                Toast.makeText(this, "Copiado", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.context_delete -> {
+                Toast.makeText(this, "Eliminar seleccionado", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+    // Mostrar el menú popup
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.menuInflater.inflate(R.menu.menu_popup, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.popup_option1 -> {
+                    Toast.makeText(this, "Opción 1 seleccionada", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.popup_option2 -> {
+                    Toast.makeText(this, "Opción 2 seleccionada", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+}
+
+menu_contextual.xml------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/context_page"
+        android:title="Pegar" />
+    <item
+        android:id="@+id/context_copy"
+        android:title="Copiar" />
+    <item
+        android:id="@+id/context_delete"
+        android:title="Eliminar" />
+</menu>
+
+menu_popup.xml------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/popup_option1"
+        android:title="Opción 1" />
+    <item
+        android:id="@+id/popup_option2"
+        android:title="Opción 2" />
+</menu>
+
+menu_opcion.xml------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/action_settings"
+
+        android:title="Configuración"/>
+
+    <item
+        android:id="@+id/action_about"
+
+        android:title="Acerca de"
+        />
+</menu>
+
+activity_main.xml------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <Button
+        android:id="@+id/button_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Menú Popup"
+        android:layout_below="@id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp" />
+
+    <TextView
+        android:id="@+id/text_view_contextual"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="menú contextual"
+        android:layout_below="@id/button_popup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:padding="16dp"
+        android:background="?attr/selectableItemBackground" />
+
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_below="@id/text_view_contextual"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+</RelativeLayout>
+
